@@ -3,7 +3,7 @@
 # Parameter description
 # Version : Version to add or replace in change log
 # Unreleased: Default is true. If it is set to false, then today's date will be set in verion title. If it is True then title will show "Unreleased"
-# ReplaceLatestEntry: Replaces the latest changelog entry, including its content.
+# ReplaceLatestEntryTitle: Replaces the latest changelog entry title.
 
 param (
   [Parameter(Mandatory = $true)]
@@ -12,8 +12,8 @@ param (
   [String]$ServiceDirectory,
   [Parameter(Mandatory = $true)]
   [String]$PackageName,
-  [boolean]$Unreleased=$True,
-  [boolean]$ReplaceLatestEntry = $False,
+  [String]$Unreleased=$True,
+  [String]$ReplaceLatestEntryTitle = $False,
   [String]$ReleaseDate
 )
 
@@ -86,10 +86,10 @@ if ($LatestsSorted[0] -ne $Version) {
     exit(0)
 }
 
-if ($ReplaceLatestEntry) 
+if ($ReplaceLatestEntryTitle) 
 {
+    $newChangeLogEntry = New-ChangeLogEntry -Version $Version -Status $ReleaseStatus -Content $ChangeLogEntries[$LatestVersion].ReleaseContent
     $ChangeLogEntries.Remove($LatestVersion)
-    $newChangeLogEntry = New-ChangeLogEntry -Version $Version -Status $ReleaseStatus
     if ($newChangeLogEntry) {
         $ChangeLogEntries[$Version] = $newChangeLogEntry
     }
